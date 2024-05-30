@@ -79,7 +79,11 @@ type Cage struct {
 }
 
 func (c Cage) printCageInfo() {
-	fmt.Printf("Cage number is %d, type of animal that lives here: %s, count of animals %d.\n", c.Number, c.AnimalThatLivesHere.Species, c.AnimalsCount)
+	if c.AnimalThatLivesHere != nil {
+		fmt.Printf("Cage number is %d, type of animal that lives here: %s, count of animals %d.\n", c.Number, c.AnimalThatLivesHere.Species, c.AnimalsCount)
+	} else {
+		fmt.Println("Error, we have 0 Animals")
+	}
 }
 
 func (c *Cage) addAnimalToCage(animalCount uint8) {
