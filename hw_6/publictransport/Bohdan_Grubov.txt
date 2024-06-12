@@ -1,0 +1,10 @@
+[2024-06-12 19:09:29] Passenger Bohdan Grubov boarded on the plane, seat C1.
+
+[2024-06-12 19:09:29] Passenger Bohdan Grubov boarded on the bus, seat 1.
+
+[2024-06-12 19:09:29] Passenger Bohdan Grubov boarded the train, wagon 1, coupe 1, seat 4.
+
+[2024-06-12 19:09:29] Passenger Bohdan Grubov unboarded from the train, wagon 1, coupe 1, seat 4.
+
+[2024-06-12 19:09:29] Passenger Bohdan Grubov unboarded from the bus, seat 1.
+

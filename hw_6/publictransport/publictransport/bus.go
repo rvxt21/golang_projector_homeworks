@@ -32,6 +32,13 @@ func (b *Bus) TakePassengers(p *passengers.Passenger) {
 		p.Tikets = append(p.Tikets, *ticket)
 		fmt.Printf("Passenger %s %s took the seat in bus.\n", p.Name, p.Surname)
 		b.Passengers = append(b.Passengers, *p)
+
+		info := fmt.Sprintf("Passenger %s %s boarded on the bus, seat %d.\n", p.Name, p.Surname, ticket.Seat)
+		err := p.AddHistory(info)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+
 	} else {
 		fmt.Println("There is no free standing places.Bus is full")
 	}
@@ -64,6 +71,12 @@ func (b *Bus) DisembarkPassengers(pas *passengers.Passenger) {
 
 		b.Passengers = append(b.Passengers[:idx], b.Passengers[idx+1:]...)
 		b.SeatsTaken -= 1
+	}
+
+	info := fmt.Sprintf("Passenger %s %s unboarded from the bus, seat %d.\n", pas.Name, pas.Surname, ticket.Seat)
+	err := pas.AddHistory(info)
+	if err != nil {
+		fmt.Println("Error:", err)
 	}
 
 }

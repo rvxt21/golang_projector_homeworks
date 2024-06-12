@@ -1,5 +1,11 @@
 package passengers
 
+import (
+	"fmt"
+	"os"
+	"time"
+)
+
 type Ticket struct {
 	TransportType string
 	Wagon         uint8
@@ -58,4 +64,22 @@ func (p Passenger) FindTrainTicket() Ticket {
 		}
 	}
 	return Ticket{}
+}
+
+func (p *Passenger) AddHistory(info string) error {
+	filename := p.Name + "_" + p.Surname + ".txt"
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	currentTime := time.Now()
+	history := fmt.Sprintf("[%s] %s\n", currentTime.Format("2006-01-02 15:04:05"), info)
+	_, err = file.WriteString(history)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,0 +1,10 @@
+[2024-06-12 19:09:29] Passenger Petro Nahorniak boarded on the plane, seat B1.
+
+[2024-06-12 19:09:29] Passenger Petro Nahorniak boarded on the bus, seat 2.
+
+[2024-06-12 19:09:29] Passenger Petro Nahorniak boarded the train, wagon 1, coupe 1, seat 3.
+
+[2024-06-12 19:09:29] Passenger Petro Nahorniak unboarded from the train, wagon 1, coupe 1, seat 4.
+
+[2024-06-12 19:09:29] Passenger Petro Nahorniak unboarded from the bus, seat 2.
+

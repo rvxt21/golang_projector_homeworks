@@ -29,6 +29,12 @@ func (t *Train) TakePassengers(p *passengers.Passenger) {
 	t.Passengers = append(t.Passengers, *p)
 	t.CurrentPlace++
 	t.checkPlaces()
+
+	info := fmt.Sprintf("Passenger %s %s boarded the train, wagon %d, coupe %d, seat %d.\n", p.Name, p.Surname, t.CurrentWagon, t.CurrentCoupe, t.CurrentPlace)
+	err := p.AddHistory(info)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 }
 
 func (t *Train) checkPlaces() {
@@ -71,4 +77,9 @@ func (t *Train) DisembarkPassengers(pas *passengers.Passenger) {
 		t.Passengers = append(t.Passengers[:idx], t.Passengers[idx+1:]...)
 	}
 
+	info := fmt.Sprintf("Passenger %s %s unboarded from the train, wagon %d, coupe %d, seat %d.\n", pas.Name, pas.Surname, t.CurrentWagon, t.CurrentCoupe, t.CurrentPlace)
+	err := pas.AddHistory(info)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 }

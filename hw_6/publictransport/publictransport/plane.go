@@ -16,14 +16,20 @@ func NewPlane() *Plane {
 }
 
 func (p *Plane) TakePassengers(passenger *passengers.Passenger) {
-
+	ticket := passengers.NewTicket("Plane", 0, 0, 0, "")
 	if containsValue(p.Passengers, *passenger) {
 		fmt.Printf("Error seating on the plane for the passenger %v, already on plane.\n", passenger)
 	} else {
-		ticket := passengers.NewTicket("Plane", 0, 0, 0, "")
+
 		p.seatOnFreeSeat(ticket)
 		passenger.Tikets = append(passenger.Tikets, *ticket)
 		p.Passengers = append(p.Passengers, *passenger)
+	}
+
+	info := fmt.Sprintf("Passenger %s %s boarded on the plane, seat %s.\n", passenger.Name, passenger.Surname, ticket.FlightSeat)
+	err := passenger.AddHistory(info)
+	if err != nil {
+		fmt.Println("Error:", err)
 	}
 
 }
@@ -49,6 +55,11 @@ func (p *Plane) DisembarkPassengers(pas *passengers.Passenger) {
 	if idx != -1 {
 
 		p.Passengers = append(p.Passengers[:idx], p.Passengers[idx+1:]...)
+	}
+	info := fmt.Sprintf("Passenger %s %s unboarded from the plane, seat %s.\n", pas.Name, pas.Surname, ticket.FlightSeat)
+	err := pas.AddHistory(info)
+	if err != nil {
+		fmt.Println("Error:", err)
 	}
 
 }
