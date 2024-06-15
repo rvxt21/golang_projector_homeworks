@@ -16,7 +16,6 @@ func (t TextEditor) PrintTextEditorInfo() {
 
 func NewTextEditor() *TextEditor {
 	return &TextEditor{
-		lines: []string{},
 		index: make(map[string][]int),
 	}
 }
