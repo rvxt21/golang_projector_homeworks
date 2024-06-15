@@ -1,0 +1,10 @@
+London is the capital of Great Britain.
+Paris is the capital of France.
+Berlin is the capital of Germany.
+Rome is the capital of Italy.
+Madrid is the capital of Spain.
+Moscow is the capital of Russia.
+Washington D.C. is the capital of the United States.
+Tokyo is the capital of Japan.
+Beijing is the capital of China.
+Canberra is the capital of Australia.

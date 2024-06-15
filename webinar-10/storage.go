@@ -34,5 +34,5 @@ func (s Storage) CreateOneTrip(t Trip) int {
 	s.allTrips[t.ID] = t
 	s.lastID = t.ID
 	return t.ID
-	fmt.Printf("Created trip. Last ID: %v\n", s.lastID)
+	// fmt.Printf("Created trip. Last ID: %v\n", s.lastID)
 }

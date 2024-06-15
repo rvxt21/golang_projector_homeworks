@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -20,6 +22,37 @@ func NewTextEditor() *TextEditor {
 	}
 }
 
+// For reading from .txt file
+func (t *TextEditor) ReadFileByLine(filePath string) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("Error opening file", err)
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+	line, err := Readln(reader)
+	for err == nil {
+		t.lines = append(t.lines, line)
+		t.IndexLine(len(t.lines) - 1)
+		line, err = Readln(reader)
+	}
+}
+
+func Readln(r *bufio.Reader) (string, error) {
+	var (
+		isPrefix bool  = true
+		err      error = nil
+		line, ln []byte
+	)
+	for isPrefix && err == nil {
+		line, isPrefix, err = r.ReadLine()
+		ln = append(ln, line...)
+	}
+	return string(ln), err
+}
+
+// For simple adding
 func (t *TextEditor) AddLine(line string) {
 	t.lines = append(t.lines, line)
 	t.IndexLine(len(t.lines) - 1)
@@ -39,15 +72,23 @@ func (t TextEditor) SearchLinesByWords(word string) {
 	for _, lineIndex := range t.index[wordLower] {
 		result = append(result, t.lines[lineIndex])
 	}
-	fmt.Printf("Result of finding is:%v", result)
+	fmt.Printf("Result of finding is: %v", result)
 }
 
 func main() {
 	textEditor := NewTextEditor()
-	textEditor.AddLine("London is the capital of Great Britain.")
-	textEditor.AddLine("London is a huge city.")
-	textEditor.AddLine("London city has a river.")
+	path := "E:\\Go programming\\golang_projector_homeworks\\hw_5\\task.txt"
 
-	textEditor.PrintTextEditorInfo()
-	textEditor.SearchLinesByWords("London")
+	textEditor.ReadFileByLine(path)
+	var userInput string
+	for {
+		fmt.Print("\nInput word you want to find.To exit write quit: ")
+		fmt.Scan(&userInput)
+		if userInput != "quit" {
+			textEditor.SearchLinesByWords(userInput)
+		} else {
+			break
+		}
+
+	}
 }
