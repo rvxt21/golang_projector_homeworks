@@ -2,7 +2,7 @@ package journey
 
 import (
 	"fmt"
-	"pubtransport/publictransport"
+	"hw6/publictransport"
 	"reflect"
 )
 

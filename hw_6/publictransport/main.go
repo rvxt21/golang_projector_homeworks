@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"pubtransport/journey"
-	"pubtransport/passengers"
-	"pubtransport/publictransport"
+	"hw6/publictransport/journey"
+	"hw6/publictransport/passengers"
+	"hw6/publictransport/publictransport"
 )
 
 func main() {

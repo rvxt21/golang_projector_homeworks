@@ -1,6 +1,6 @@
 package publictransport
 
-import "pubtransport/passengers"
+import "hw6/publictransport/passengers"
 
 type PublicTransport interface {
 	TakePassengers(*passengers.Passenger)

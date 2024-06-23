@@ -16,7 +16,7 @@ func NewStorage() *Storage {
 	}
 }
 
-func (s Storage) GetAllTrips() []Trip {
+func (s *Storage) GetAllTrips() []Trip {
 	var trips = make([]Trip, 0, len(s.allTrips))
 
 	for _, t := range s.allTrips {
@@ -28,11 +28,11 @@ func (s Storage) GetAllTrips() []Trip {
 	return trips
 }
 
-func (s Storage) CreateOneTrip(t Trip) int {
+func (s *Storage) CreateOneTrip(t Trip) int {
 	fmt.Println("Trying to create trip")
 	t.ID = s.lastID + 1
 	s.allTrips[t.ID] = t
-	s.lastID = t.ID
+	s.lastID++
+	fmt.Printf("Created trip. Last ID: %v\n", s.lastID)
 	return t.ID
-	// fmt.Printf("Created trip. Last ID: %v\n", s.lastID)
 }

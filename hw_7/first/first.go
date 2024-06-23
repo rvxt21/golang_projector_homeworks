@@ -40,6 +40,8 @@ func GenerateNumbers(count int, maxNumber int, numbers *Numbers, out chan Number
 		numbers.numbers = append(numbers.numbers, randomNumber)
 		out <- *numbers
 	}
+	fmt.Println("*******ADDED NUMBERS TO NUMBERS STRUCT*******")
+	fmt.Println(numbers)
 	close(out)
 	fmt.Println("Ended generating...")
 }
