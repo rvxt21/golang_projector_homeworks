@@ -2,7 +2,7 @@ package publictransport
 
 import (
 	"fmt"
-	"pubtransport/passengers"
+	"hw6/publictransport/passengers"
 )
 
 type Bus struct {
