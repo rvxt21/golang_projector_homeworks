@@ -57,3 +57,29 @@ type Task struct {
 	CreatedAt   time.Time
 	DueDate     time.Time
 }
+
+type Role string
+
+const (
+	StudentRole     Role = "Student"
+	WorkerRole      Role = "Worker"
+	SchoolchildRole Role = "Schoolchild"
+)
+
+func (r Role) IsValid() error {
+	switch r {
+	case StudentRole, WorkerRole, SchoolchildRole:
+		return nil
+	default:
+		return errors.New("invalid user role")
+	}
+}
+
+type User struct {
+	Username string
+	Password string
+	ID       int
+	Name     string
+	Age      uint8
+	Role     Role
+}

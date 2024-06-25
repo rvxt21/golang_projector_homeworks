@@ -3,29 +3,29 @@
     {
         "Title": "Create API for tasks managment",
         "Description": "Look in the Projector homework files",
-        "Status": "Not ready",
+        "Status": "ToDo",
         "DueDate": "2024-09-29T00:00:00Z"
     },
 "2":
     {
         "Title": "Create text for post",
         "Description": "Post for some event in my NGO",
-        "Status": "Running",
+        "Priority": "Low",
         "DueDate": "2024-01-23T00:00:00Z"
     },
 "3":
     {
-        "Title": "Create image for post",
-        "Description": "Post for some event in my NGO",
-        "Status": "Not ready",
+        "Title": "Create post on Instagram",
+        "Description": "Look in Projector HW",
+		"Priority": "High",
         "DueDate": "2024-01-08T00:00:00Z"
     },
 "4":
     {
-        "Title": "Post on social media",
-        "Description": "Post for some event in my NGO",
-        "Status": "Ready",
-        "DueDate": "2024-09-29T00:00:00Z"
+        "Title": "Find speaker for my event",
+        "Description": "Birthday of my Best Friend on 10/10/2024",
+		"Priority": "High",
+        "DueDate": "2024-01-08T00:00:00Z"
     },
 "5":
     {
@@ -35,5 +35,4 @@
         "Status": "ToDo",
         "DueDate": "2024-01-08T00:00:00Z"
     }
-
 }

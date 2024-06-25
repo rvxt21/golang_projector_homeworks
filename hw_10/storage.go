@@ -9,9 +9,11 @@ import (
 )
 
 type Storage struct {
-	m        sync.Mutex
-	lastId   int
-	allTasks map[int]Task
+	m          sync.Mutex
+	lastId     int
+	allTasks   map[int]Task
+	lastUserId int
+	allUsers   map[int]User
 }
 
 func NewStorage() *Storage {
@@ -101,4 +103,22 @@ func (s *Storage) UpdateTask(idForUpdate int, t Task) bool {
 	}
 	s.allTasks[idForUpdate] = taskToUpdate
 	return true
+}
+
+func (s *Storage) CreateOneUser(u User) (int, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	log.Info().Msg("Creating one user")
+
+	if err := u.Role.IsValid(); err != nil {
+		log.Error().Err(err)
+		return 0, err
+	}
+
+	u.ID = s.lastUserId + 1
+	s.allUsers[u.ID] = u
+	s.lastUserId++
+
+	return s.lastUserId, nil
 }
