@@ -39,8 +39,14 @@ func (tr *TasksResourse) CreateOne(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task.ID = tr.s.CreateOneTask(task)
+	task.ID, err = tr.s.CreateOneTask(task)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	err = json.NewEncoder(w).Encode(task)
+
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error to encode JSON in CreateOneupdates")
 		w.WriteHeader(http.StatusInternalServerError)
