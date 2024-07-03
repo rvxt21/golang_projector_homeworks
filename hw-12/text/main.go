@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"regexp"
-
-	"github.com/rs/zerolog/log"
+	"main/process"
 )
 
 func main() {
@@ -13,19 +9,10 @@ func main() {
 	//`[А-ЩЬЮЯҐЄІЇа-щьюяґєії]+,` "душу,""ні"
 	//^[А-ЯҐЄІЇ][а-щьюяґєії]+
 
-	pattern, err := regexp.Compile(`[А-ЩЬЮЯҐЄІЇа-щьюяґєії]+,`)
-	if err != nil {
-		panic(err.Error())
-	}
+	pattern := process.CompileRegex(`[А-ЩЬЮЯҐЄІЇа-щьюяґєії]+,`)
 	filePath := "files/text.txt"
 
-	fileContent, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to open file")
-	}
-	matches := pattern.FindAllString(string(fileContent), -1)
+	fileContent := process.ReadFile(filePath)
 
-	for i, v := range matches {
-		fmt.Println(i, v)
-	}
+	process.FindMatches(pattern, fileContent)
 }
