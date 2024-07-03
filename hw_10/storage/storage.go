@@ -1,6 +1,7 @@
-package main
+package storage
 
 import (
+	"hw10/enteties"
 	"sort"
 	"sync"
 	"time"
@@ -11,18 +12,18 @@ import (
 type Storage struct {
 	m          sync.Mutex
 	lastId     int
-	allTasks   map[int]Task
+	allTasks   map[int]enteties.Task
 	lastUserId int
-	allUsers   map[int]User
+	allUsers   map[int]enteties.User
 }
 
 func NewStorage() *Storage {
 	return &Storage{
-		allTasks: make(map[int]Task),
+		allTasks: make(map[int]enteties.Task),
 	}
 }
 
-func (s *Storage) CreateOneTask(t Task) (int, error) {
+func (s *Storage) CreateOneTask(t enteties.Task) (int, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -47,13 +48,13 @@ func (s *Storage) CreateOneTask(t Task) (int, error) {
 	return s.lastId, nil
 }
 
-func (s *Storage) GetAllTasks() []Task {
+func (s *Storage) GetAllTasks() []enteties.Task {
 	s.m.Lock()
 	defer s.m.Unlock()
 
 	log.Info().Msg("Getting all tasks")
 
-	var tasks = make([]Task, 0, len(s.allTasks))
+	var tasks = make([]enteties.Task, 0, len(s.allTasks))
 	for _, task := range s.allTasks {
 		tasks = append(tasks, task)
 	}
@@ -78,7 +79,7 @@ func (s *Storage) DeleteTask(id int) bool {
 	return true
 }
 
-func (s *Storage) UpdateTask(idForUpdate int, t Task) bool {
+func (s *Storage) UpdateTask(idForUpdate int, t enteties.Task) bool {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -105,7 +106,7 @@ func (s *Storage) UpdateTask(idForUpdate int, t Task) bool {
 	return true
 }
 
-func (s *Storage) CreateOneUser(u User) (int, error) {
+func (s *Storage) CreateOneUser(u enteties.User) (int, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
