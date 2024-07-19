@@ -6,22 +6,33 @@ import (
 )
 
 type Tour struct {
-	ID             int
-	Price          uint16
-	Programm       string
-	StartDate      time.Time
-	EndDate        time.Time
-	TouristsNumber uint8
-	Nutrition      Nutrition
-	TransportType  Transport
+	ID             string    `json:"id"`
+	Title          string    `json:"title"`
+	Price          uint16    `json:"price"`
+	Programm       string    `json:"program"`
+	TouristsNumber uint8     `json:"tourists_number"`
+	Nutrition      Nutrition `json:"nutrition"`
+	TransportType  Transport `json:"transport_type"`
+}
+
+func NewTour(title string, price uint16, programm string, touristsnum uint8, nutrition Nutrition, transport Transport) Tour {
+	return Tour{
+		ID:             time.Now().String(),
+		Title:          title,
+		Price:          price,
+		Programm:       programm,
+		TouristsNumber: touristsnum,
+		Nutrition:      nutrition,
+		TransportType:  transport,
+	}
 }
 
 type Nutrition string
 
 const (
-	Breakfast             Nutrition = "breakfest"
-	AllInclusive          Nutrition = "all inclusive"
-	BreakfastPlusDinner   Nutrition = "breakfest and dinner"
+	Breakfast             Nutrition = "Breakfast"
+	AllInclusive          Nutrition = "All inclusive"
+	BreakfastPlusDinner   Nutrition = "Breakfast and dinner"
 	NotSpecifiedNutrition Nutrition = ""
 )
 
