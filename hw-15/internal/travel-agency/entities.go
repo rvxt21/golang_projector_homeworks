@@ -60,3 +60,13 @@ func (t Transport) IsValid() error {
 		return errors.New("invalid nutrition")
 	}
 }
+
+type User struct {
+	Name        string
+	Email       string
+	BookedTours []Tour
+}
+
+func (u *User) BookTour(tour Tour) {
+	u.BookedTours = append(u.BookedTours, tour)
+}

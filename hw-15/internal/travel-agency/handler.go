@@ -18,6 +18,8 @@ type CreateTourReqBody struct {
 type service interface {
 	CreateTour(title string, price uint16, programm string, touristsnum uint8, nutrition Nutrition, transport Transport)
 	GetAll() []Tour
+	GetUserTours() []Tour
+	BookTour(id string)
 }
 
 type Handler struct {
@@ -46,6 +48,28 @@ func (h Handler) GetAllTours(w http.ResponseWriter, r *http.Request) {
 	err := json.NewEncoder(w).Encode(tours)
 	if err != nil {
 		log.Error().Err(err).Msg("Error to encode JSON in GetAll")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h Handler) BookTour(w http.ResponseWriter, r *http.Request) {
+	tourID := r.URL.Query().Get("id")
+	if tourID == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Info().Msg("Missing tour ID")
+		return
+	}
+
+	h.s.BookTour(tourID)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) GetUserTours(w http.ResponseWriter, r *http.Request) {
+	tours := h.s.GetUserTours()
+	err := json.NewEncoder(w).Encode(tours)
+	if err != nil {
+		log.Error().Err(err).Msg("Error to encode JSON in GetUserTours")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
