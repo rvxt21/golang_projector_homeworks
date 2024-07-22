@@ -12,14 +12,14 @@ import (
 type Storage struct {
 	m          sync.Mutex
 	lastId     int
-	allTasks   map[int]enteties.Task
+	AllTasks   map[int]enteties.Task
 	lastUserId int
 	allUsers   map[int]enteties.User
 }
 
 func NewStorage() *Storage {
 	return &Storage{
-		allTasks: make(map[int]enteties.Task),
+		AllTasks: make(map[int]enteties.Task),
 	}
 }
 
@@ -40,7 +40,7 @@ func (s *Storage) CreateOneTask(t enteties.Task) (int, error) {
 	}
 
 	t.ID = s.lastId + 1
-	s.allTasks[t.ID] = t
+	s.AllTasks[t.ID] = t
 	s.lastId++
 	t.CreatedAt = time.Now()
 
@@ -54,8 +54,8 @@ func (s *Storage) GetAllTasks() []enteties.Task {
 
 	log.Info().Msg("Getting all tasks")
 
-	var tasks = make([]enteties.Task, 0, len(s.allTasks))
-	for _, task := range s.allTasks {
+	var tasks = make([]enteties.Task, 0, len(s.AllTasks))
+	for _, task := range s.AllTasks {
 		tasks = append(tasks, task)
 	}
 
@@ -70,12 +70,12 @@ func (s *Storage) DeleteTask(id int) bool {
 
 	log.Info().Msgf("Deleting task ID %d", id)
 
-	_, ok := s.allTasks[id]
+	_, ok := s.AllTasks[id]
 	if !ok {
 		return false
 	}
 
-	delete(s.allTasks, id)
+	delete(s.AllTasks, id)
 	return true
 }
 
@@ -85,7 +85,7 @@ func (s *Storage) UpdateTask(idForUpdate int, t enteties.Task) bool {
 
 	log.Info().Msgf("Updating task ID %d", idForUpdate)
 
-	taskToUpdate, exists := s.allTasks[idForUpdate]
+	taskToUpdate, exists := s.AllTasks[idForUpdate]
 	if !exists {
 		log.Info().Msg("Task does not exists. Invalid to update.")
 		return false
@@ -102,7 +102,7 @@ func (s *Storage) UpdateTask(idForUpdate int, t enteties.Task) bool {
 	if !t.DueDate.IsZero() {
 		taskToUpdate.DueDate = t.DueDate
 	}
-	s.allTasks[idForUpdate] = taskToUpdate
+	s.AllTasks[idForUpdate] = taskToUpdate
 	return true
 }
 
