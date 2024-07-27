@@ -1,0 +1,9 @@
+CREATE TABLE tasks(
+    id INTEGER PRIMARY KEY NOT NULL,
+    title VARCHAR NOT NULL,
+    descriptions VARCHAR NOT NULL,
+    priority VARCHAR NOT NULL,
+    status VARCHAR NOT NULL,
+    createdAt TIMESTAMP NOT NULL,
+    dueDate TIMESTAMP NOT NULL
+);

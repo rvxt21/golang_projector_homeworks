@@ -3,7 +3,6 @@ package resources
 import (
 	"encoding/json"
 	"hw10/enteties"
-	"hw10/middleware"
 	"hw10/storage"
 	"net/http"
 
@@ -11,7 +10,7 @@ import (
 )
 
 type TasksResourse struct {
-	S *storage.Storage
+	S *storage.DBStorage
 }
 
 func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +23,7 @@ func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = tr.S.CreateOneTask(task)
+	err = tr.S.InsertTask(task.ID, task.Title, task.Description, string(task.Priority), string(task.Status), task.CreatedAt, task.DueDate)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -33,7 +32,7 @@ func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(task)
 
 	if err != nil {
-		log.Error().Err(err).Msg("Error to encode JSON in CreateOneupdates")
+		log.Error().Err(err).Msg("Error to encode JSON in CreateOneTask")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -41,8 +40,12 @@ func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tr *TasksResourse) GetAll(w http.ResponseWriter, r *http.Request) {
-	tasks := tr.S.GetAllTasks()
-	err := json.NewEncoder(w).Encode(tasks)
+	tasks, err := tr.S.GetAllTasks()
+	if err != nil {
+		w.WriteHeader(http.StatusBadGateway)
+		log.Error().Err(err).Msgf("Error getting all tasks")
+	}
+	err = json.NewEncoder(w).Encode(tasks)
 	if err != nil {
 		log.Error().Err(err).Msg("Error to encode JSON in GetAll")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -50,55 +53,55 @@ func (tr *TasksResourse) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (tr *TasksResourse) DeleteTask(w http.ResponseWriter, r *http.Request) {
-	taskID := r.Context().Value(middleware.IdKey).(int)
+// func (tr *TasksResourse) DeleteTask(w http.ResponseWriter, r *http.Request) {
+// 	taskID := r.Context().Value(middleware.IdKey).(int)
 
-	ok := tr.S.DeleteTask(taskID)
-	if !ok {
-		log.Info().Msg("Task to delete not found.")
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-}
+// 	ok := tr.S.DeleteTask(taskID)
+// 	if !ok {
+// 		log.Info().Msg("Task to delete not found.")
+// 		w.WriteHeader(http.StatusNotFound)
+// 		return
+// 	}
+// }
 
-func (tr *TasksResourse) UpdateTask(w http.ResponseWriter, r *http.Request) {
-	updateID := r.Context().Value(middleware.IdKey).(int)
+// func (tr *TasksResourse) UpdateTask(w http.ResponseWriter, r *http.Request) {
+// 	updateID := r.Context().Value(middleware.IdKey).(int)
 
-	var update enteties.Task
-	err := json.NewDecoder(r.Body).Decode(&update)
-	if err != nil {
-		log.Error().Err(err).Msg("Error to decode JSON in UpdateTask")
-	}
+// 	var update enteties.Task
+// 	err := json.NewDecoder(r.Body).Decode(&update)
+// 	if err != nil {
+// 		log.Error().Err(err).Msg("Error to decode JSON in UpdateTask")
+// 	}
 
-	updated := tr.S.UpdateTask(updateID, update)
-	if !updated {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(update)
-}
+// 	updated := tr.S.UpdateTask(updateID, update)
+// 	if !updated {
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(update)
+// }
 
-func (tr TasksResourse) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user enteties.User
+// func (tr TasksResourse) CreateUser(w http.ResponseWriter, r *http.Request) {
+// 	var user enteties.User
 
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		log.Error().Err(err).Msg("Error to decode JSON in CreateUser")
-		return
-	}
-	_, err = tr.S.CreateOneUser(user)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+// 	err := json.NewDecoder(r.Body).Decode(&user)
+// 	if err != nil {
+// 		log.Error().Err(err).Msg("Error to decode JSON in CreateUser")
+// 		return
+// 	}
+// 	_, err = tr.S.CreateOneUser(user)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusBadRequest)
+// 		return
+// 	}
 
-	err = json.NewEncoder(w).Encode(user)
+// 	err = json.NewEncoder(w).Encode(user)
 
-	if err != nil {
-		log.Error().Err(err).Msg("Error to encode JSON in CreateOneupdates")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+// 	if err != nil {
+// 		log.Error().Err(err).Msg("Error to encode JSON in CreateOneupdates")
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 		return
+// 	}
 
-}
+// }

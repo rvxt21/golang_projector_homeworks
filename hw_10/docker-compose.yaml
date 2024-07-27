@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    depends_on:
+      - database
+    environment:
+    - POSTGRES_CONN_STR=postgres://admin:justforhomework@database/db?sslmode=disable
+    ports:
+      - 8080:8080
+  database:
+    image: postgres
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: justforhomework
+    ports:
+      - "5432:5432"
