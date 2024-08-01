@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"time"
+	"encoding/json"
+	"net/http"
 
 	"github.com/rs/zerolog/log"
 
@@ -12,25 +13,45 @@ import (
 const orangesTopic = "oranges"
 
 func main() {
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", orangesTopic, 0)
-	if err != nil {
-		log.Fatal().Msgf("failed to dial leader: %s", err)
-	}
-	defer conn.Close()
+	ctx := context.Background()
 
-	conn.SetReadDeadline(time.Now().Add(time.Second * 30))
-	batch := conn.ReadBatch(10e3, 1e6)
-	defer batch.Close()
+	storage := NewInMemStorage()
+	analytics := NewOrangesAnalytics()
+	service := &OrangeService{
+		Storage:   storage,
+		Analytics: *analytics,
+	}
+
+	go func() {
+		http.ListenAndServe(":8080", OrangesAnalyticsHandler(service))
+	}()
+
+	go func() {
+		http.ListenAndServe(":8081", AllOrangesHandler(service))
+	}()
+
+	kafkaReader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: []string{"localhost:9092"},
+		Topic:   orangesTopic,
+	})
 
 	for {
-		msg, err := batch.ReadMessage()
+		msg, err := kafkaReader.ReadMessage(ctx)
 		if err != nil {
-			break
+			log.Fatal().Err(err).Msg("Failed to read message")
 		}
 		log.Info().Str("msg", string(msg.Value)).Msg("Got message from kafka")
-	}
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to read batch message")
+
+		var oe OrangeEvent
+
+		if err := json.Unmarshal(msg.Value, &oe); err != nil {
+			log.Warn().Err(err).Msg("Failed to decode message")
+			continue
+		}
+
+		if err := service.ConsumeOrangeEvent(oe); err != nil {
+			log.Warn().Err(err).Msg("Failed to consume")
+		}
 	}
 
 }

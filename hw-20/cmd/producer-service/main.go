@@ -22,8 +22,8 @@ func main() {
 	idService := IDGeneratorService{}
 	for {
 		id := idService.GenerateID()
-		size := rand.Intn(1000)
-		randomMessage := fmt.Sprintf(`"OrangeID: %d, "Size": %d`, id, size)
+		size := rand.Intn(300)
+		randomMessage := fmt.Sprintf(`{"OrangeID": %d, "Size": %d}`, id, size)
 		_, err = conn.WriteMessages(
 			kafka.Message{Value: []byte(randomMessage)},
 		)
