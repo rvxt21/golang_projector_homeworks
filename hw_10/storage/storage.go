@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Storage struct {
+type InMemory struct {
 	m          sync.Mutex
 	lastId     int
 	AllTasks   map[int]enteties.Task
@@ -17,13 +17,13 @@ type Storage struct {
 	allUsers   map[int]enteties.User
 }
 
-func NewStorage() *Storage {
-	return &Storage{
+func NewInMemory() *InMemory {
+	return &InMemory{
 		AllTasks: make(map[int]enteties.Task),
 	}
 }
 
-func (s *Storage) CreateOneTask(t enteties.Task) (int, error) {
+func (s *InMemory) CreateOneTask(t enteties.Task) (int, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -48,7 +48,7 @@ func (s *Storage) CreateOneTask(t enteties.Task) (int, error) {
 	return s.lastId, nil
 }
 
-func (s *Storage) GetAllTasks() []enteties.Task {
+func (s *InMemory) GetAllTasks() []enteties.Task {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -64,7 +64,7 @@ func (s *Storage) GetAllTasks() []enteties.Task {
 	return tasks
 }
 
-func (s *Storage) DeleteTask(id int) bool {
+func (s *InMemory) DeleteTask(id int) bool {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -79,7 +79,7 @@ func (s *Storage) DeleteTask(id int) bool {
 	return true
 }
 
-func (s *Storage) UpdateTask(idForUpdate int, t enteties.Task) bool {
+func (s *InMemory) UpdateTask(idForUpdate int, t enteties.Task) bool {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -106,7 +106,7 @@ func (s *Storage) UpdateTask(idForUpdate int, t enteties.Task) bool {
 	return true
 }
 
-func (s *Storage) CreateOneUser(u enteties.User) (int, error) {
+func (s *InMemory) CreateOneUser(u enteties.User) (int, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 

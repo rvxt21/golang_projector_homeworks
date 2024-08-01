@@ -4,16 +4,15 @@ import (
 	"database/sql"
 	"fmt"
 	"hw10/enteties"
-	"time"
 
 	_ "github.com/lib/pq"
 )
 
-type DBStorage struct {
+type Database struct {
 	db *sql.DB
 }
 
-func New(connStr string) (*DBStorage, error) {
+func New(connStr string) (*Database, error) {
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("openning database: %w", err)
@@ -22,11 +21,13 @@ func New(connStr string) (*DBStorage, error) {
 		return nil, fmt.Errorf("pinging database: %w", err)
 	}
 
-	return &DBStorage{db: db}, nil
+	return &Database{db: db}, nil
 }
 
-func (db *DBStorage) InsertTask(id int, title string, descr string, priority string, status string, createdAt time.Time, dueTo time.Time) error {
-	_, err := db.db.Exec("INSERT INTO tasks(id,title,descriptions,priority,status,createdAt,dueDate) VALUES($1, $2, $3, $4, $5, $6, $7)", id, title, descr, priority, status, createdAt, dueTo)
+func (db *Database) InsertTask(task enteties.Task) error {
+	query := `INSERT INTO tasks(title,descriptions,priority,status,createdAt,dueDate) 
+			VALUES($1, $2, $3, $4, $5, $6)`
+	_, err := db.db.Exec(query, task.Title, task.Description, task.Priority, task.Status, task.CreatedAt, task.DueDate)
 	if err != nil {
 		return fmt.Errorf("inserting task: %w", err)
 	}
@@ -34,8 +35,10 @@ func (db *DBStorage) InsertTask(id int, title string, descr string, priority str
 	return nil
 }
 
-func (db *DBStorage) GetAllTasks() ([]enteties.Task, error) {
-	rows, err := db.db.Query("SELECT id,title,descriptions,priority,status,createdAt,dueDate FROM tasks")
+func (db *Database) GetAllTasks() ([]enteties.Task, error) {
+	query := `"SELECT id,title,descriptions,priority,status,createdAt,dueDate 
+			   FROM tasks"`
+	rows, err := db.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("selecting tasks: %w", err)
 	}

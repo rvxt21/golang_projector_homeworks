@@ -1,5 +1,5 @@
 CREATE TABLE tasks(
-    id INTEGER PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     title VARCHAR NOT NULL,
     descriptions VARCHAR NOT NULL,
     priority VARCHAR NOT NULL,

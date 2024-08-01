@@ -10,7 +10,7 @@ import (
 )
 
 type TasksResourse struct {
-	S *storage.DBStorage
+	S *storage.Database
 }
 
 func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,7 @@ func (tr *TasksResourse) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tr.S.InsertTask(task.ID, task.Title, task.Description, string(task.Priority), string(task.Status), task.CreatedAt, task.DueDate)
+	err = tr.S.InsertTask(task)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

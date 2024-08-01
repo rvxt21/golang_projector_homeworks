@@ -1,14 +1,44 @@
 {
-    "sqltools.connections": [
-        {
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 5432,
-            "driver": "PostgreSQL",
-            "name": "hw10",
-            "password": "justforhomework",
-            "username": "admin",
-            "database": "db"
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "hw10",
+      "password": "justforhomework",
+      "username": "admin",
+      "database": "db"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "username": "admin",
+      "password": "justforhomework",
+      "database": "db",
+      "name": "hw10_2"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "hw10_3",
+      "database": "db",
+      "username": "admin",
+      "password": "justforhomework"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "test",
+      "database": "db",
+      "username": "admin",
+      "password": "justforhomework"
+    }
+  ]
 }

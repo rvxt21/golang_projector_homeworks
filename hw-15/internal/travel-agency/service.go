@@ -43,16 +43,3 @@ func (s *Service) GetTourByID(tourID int) (Tour, error) {
 	}
 	return t, nil
 }
-
-// func (s *Service) BookTour(id string) {
-// 	for _, tour := range s.s.GetAllTours() {
-// 		if tour.ID == id {
-// 			s.user.BookTour(tour)
-// 			break
-// 		}
-// 	}
-// }
-
-// func (s *Service) GetUserTours() []Tour {
-// 	return s.user.BookedTours
-// }
