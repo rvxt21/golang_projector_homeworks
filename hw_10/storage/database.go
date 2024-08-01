@@ -12,7 +12,7 @@ type Database struct {
 	db *sql.DB
 }
 
-func New(connStr string) (*Database, error) {
+func NewDatabase(connStr string) (*Database, error) {
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("openning database: %w", err)

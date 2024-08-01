@@ -13,7 +13,7 @@ import (
 func main() {
 	mux := mux.NewRouter()
 
-	dbStorage, err := storage.New(os.Getenv("POSTGRES_CONN_STR"))
+	dbStorage, err := storage.NewDatabase(os.Getenv("POSTGRES_CONN_STR"))
 	if err != nil {
 		log.Fatal().Err(err).Msg("failing connecting to DB")
 	}
