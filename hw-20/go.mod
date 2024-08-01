@@ -3,6 +3,7 @@ module hw20
 go 1.22.1
 
 require (
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect

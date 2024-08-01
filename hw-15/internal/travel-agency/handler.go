@@ -2,24 +2,17 @@ package travelagency
 
 import (
 	"encoding/json"
+	"hw15/internal/middlewares"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 )
 
-type CreateTourReqBody struct {
-	Title         string
-	Price         uint16
-	Programm      string
-	TouristsNum   uint8 `json:"tourists_number"`
-	Nutrition     Nutrition
-	TransportType Transport `json:"transport_type"`
-}
 type service interface {
-	CreateTour(title string, price uint16, programm string, touristsnum uint8, nutrition Nutrition, transport Transport)
-	GetAll() []Tour
-	GetUserTours() []Tour
-	BookTour(id string)
+	CreateTour(tour Tour)
+	GetAllTours() map[int]Tour
+	GetTourByID(tourID int) (Tour, error)
 }
 
 type Handler struct {
@@ -30,46 +23,48 @@ func NewHandler(s service) Handler {
 	return Handler{s: s}
 }
 
-func (h Handler) CreateTour(w http.ResponseWriter, r *http.Request) {
-	var reqBody CreateTourReqBody
+func (h Handler) RegisterRoutes(r *mux.Router) {
+	r.HandleFunc("/tours", h.CreateTour).Methods("POST")
+	r.HandleFunc("/tours", h.GetAllTours).Methods("GET")
+	r.Handle("/tours/{id}", middlewares.IDHandler(http.HandlerFunc(h.GetTourInfo))).Methods("GET")
+}
 
-	err := json.NewDecoder(r.Body).Decode(&reqBody)
+func (h Handler) CreateTour(w http.ResponseWriter, r *http.Request) {
+	var tour Tour
+
+	err := json.NewDecoder(r.Body).Decode(&tour)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Info().Err(err).Msg("Error to decode JSON")
 	}
 
-	h.s.CreateTour(reqBody.Title, reqBody.Price, reqBody.Programm, reqBody.TouristsNum, reqBody.Nutrition, reqBody.TransportType)
+	h.s.CreateTour(tour)
+
+}
+
+func (h Handler) GetTourInfo(w http.ResponseWriter, r *http.Request) {
+	log.Info().Msg("Get tour by ID Handler called")
+	id := r.Context().Value(middlewares.IdKey).(int)
+
+	tour, err := h.s.GetTourByID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadGateway)
+		return
+	}
+	err = json.NewEncoder(w).Encode(tour)
+	if err != nil {
+		log.Error().Err(err).Msg("Error to encode JSON")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 }
 
 func (h Handler) GetAllTours(w http.ResponseWriter, r *http.Request) {
-	tours := h.s.GetAll()
+	tours := h.s.GetAllTours()
 	err := json.NewEncoder(w).Encode(tours)
 	if err != nil {
 		log.Error().Err(err).Msg("Error to encode JSON in GetAll")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-}
-
-func (h Handler) BookTour(w http.ResponseWriter, r *http.Request) {
-	tourID := r.URL.Query().Get("id")
-	if tourID == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Info().Msg("Missing tour ID")
-		return
-	}
-
-	h.s.BookTour(tourID)
-	w.WriteHeader(http.StatusOK)
-}
-
-func (h Handler) GetUserTours(w http.ResponseWriter, r *http.Request) {
-	tours := h.s.GetUserTours()
-	err := json.NewEncoder(w).Encode(tours)
-	if err != nil {
-		log.Error().Err(err).Msg("Error to encode JSON in GetUserTours")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

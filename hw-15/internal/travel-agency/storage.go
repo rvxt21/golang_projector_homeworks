@@ -1,6 +1,7 @@
 package travelagency
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/rs/zerolog/log"
@@ -8,11 +9,13 @@ import (
 
 type InMemoryStorage struct {
 	tourM sync.Mutex
-	tours []Tour
+	tours map[int]Tour
 }
 
 func NewInMemoryStorage() *InMemoryStorage {
-	return &InMemoryStorage{}
+	return &InMemoryStorage{
+		tours: map[int]Tour{},
+	}
 }
 
 func (s *InMemoryStorage) Create(t Tour) {
@@ -20,27 +23,30 @@ func (s *InMemoryStorage) Create(t Tour) {
 	defer s.tourM.Unlock()
 
 	log.Info().Msg("Trying to create one task")
+	s.tours[t.ID] = t
 
-	if err := t.Nutrition.IsValid(); err != nil {
-		log.Info().Err(err).Msgf("Not valid nutrition for trying to create %v tour.", t.ID)
-		return
-	}
-
-	if err := t.TransportType.IsValid(); err != nil {
-		log.Info().Err(err).Msgf("Not valid transport type for trying to create %v tour.", t.ID)
-		return
-	}
-	s.tours = append(s.tours, t)
 }
 
-func (s *InMemoryStorage) GetAllTours() []Tour {
+func (s *InMemoryStorage) GetAllTours() map[int]Tour {
 	s.tourM.Lock()
 	defer s.tourM.Unlock()
 
 	log.Info().Msg("Getting all tasks")
 
-	tours := make([]Tour, len(s.tours))
-	copy(tours, s.tours)
+	return s.tours
+}
 
-	return tours
+var errTourNotFound = errors.New("tour not found")
+
+func (s *InMemoryStorage) GetTourByID(tourID int) (Tour, error) {
+	s.tourM.Lock()
+	defer s.tourM.Unlock()
+
+	log.Info().Msgf("Getting tour ID: %d", tourID)
+	tour, exists := s.tours[tourID]
+	if !exists {
+		return Tour{}, errTourNotFound
+	}
+
+	return tour, nil
 }
