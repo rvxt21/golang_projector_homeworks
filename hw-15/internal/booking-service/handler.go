@@ -10,7 +10,7 @@ import (
 )
 
 type service interface {
-	ReserveTour(res Reservation)
+	ReserveTour(res Reservation) error
 	GetReservationInfo(id int) (Reservation, bool)
 }
 
@@ -39,7 +39,11 @@ func (h Handler) CreateReservetion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.s.ReserveTour(reserv)
+	err = h.s.ReserveTour(reserv)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 }
 

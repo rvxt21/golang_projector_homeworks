@@ -43,7 +43,7 @@ func (s *Service) GetAllTours() map[int]Tour {
 func (s *Service) GetTourByID(tourID int) (Tour, error) {
 	t, err := s.s.GetTourByID(tourID)
 	if err != nil {
-		return Tour{}, errTourNotFound
+		return Tour{}, ErrTourNotFound
 	}
 	return t, nil
 }

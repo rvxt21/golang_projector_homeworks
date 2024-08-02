@@ -36,7 +36,7 @@ func (s *InMemoryStorage) GetAllTours() map[int]Tour {
 	return s.tours
 }
 
-var errTourNotFound = errors.New("tour not found")
+var ErrTourNotFound = errors.New("tour not found")
 
 func (s *InMemoryStorage) GetTourByID(tourID int) (Tour, error) {
 	s.tourM.Lock()
@@ -45,7 +45,7 @@ func (s *InMemoryStorage) GetTourByID(tourID int) (Tour, error) {
 	log.Info().Msgf("Getting tour ID: %d", tourID)
 	tour, exists := s.tours[tourID]
 	if !exists {
-		return Tour{}, errTourNotFound
+		return Tour{}, ErrTourNotFound
 	}
 
 	return tour, nil

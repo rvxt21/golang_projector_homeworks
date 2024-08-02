@@ -1,6 +1,7 @@
 package userservice
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/rs/zerolog/log"
@@ -23,6 +24,8 @@ func (s *InMemUserStorage) CreateUser(u User) {
 
 	s.users[u.ID] = u
 }
+
+var ErrUserNotFound = errors.New("user not found")
 
 func (s *InMemUserStorage) GetUserById(id int) (User, bool) {
 	s.m.Lock()
