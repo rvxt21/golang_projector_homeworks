@@ -1,6 +1,8 @@
 package main
 
 import (
+	bookingservice "hw15/internal/booking-service"
+	idgenerator "hw15/internal/id-generator"
 	travelagency "hw15/internal/travel-agency"
 	userservice "hw15/internal/user-service"
 	"net/http"
@@ -13,7 +15,7 @@ func main() {
 	router := mux.NewRouter()
 	//Tours Service
 	toursStorage := travelagency.NewInMemoryStorage()
-	idGenerator := travelagency.NewIDGenerator()
+	idGenerator := idgenerator.NewIDGenerator()
 	tourService := travelagency.NewService(toursStorage, idGenerator)
 	toursHandler := travelagency.NewHandler(tourService)
 
@@ -23,6 +25,13 @@ func main() {
 	userService := userservice.NewUserService(&userStorage)
 	userHandler := userservice.NewHandler(userService)
 	userHandler.RegisterRoutes(router)
+
+	//Reservation Service
+	reservIdGenerator := idgenerator.NewIDGenerator()
+	reservStorage := bookingservice.NewInMemStorage()
+	reservService := bookingservice.NewService(&reservStorage, reservIdGenerator)
+	reservHandler := bookingservice.NewHandler(reservService)
+	reservHandler.RegisterRoutes(router)
 
 	//Server
 	err := http.ListenAndServe(":8080", router)

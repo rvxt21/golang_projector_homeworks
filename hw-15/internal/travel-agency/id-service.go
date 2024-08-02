@@ -1,20 +1,20 @@
 package travelagency
 
-import "sync"
+// import "sync"
 
-type IDGeneratorService struct {
-	mu     sync.Mutex
-	lastId int
-}
+// type IDGeneratorService struct {
+// 	mu     sync.Mutex
+// 	lastId int
+// }
 
-func NewIDGenerator() *IDGeneratorService {
-	return &IDGeneratorService{}
-}
+// func NewIDGenerator() *IDGeneratorService {
+// 	return &IDGeneratorService{}
+// }
 
-func (ig *IDGeneratorService) GenerateID() int {
-	ig.mu.Lock()
-	defer ig.mu.Unlock()
+// func (ig *IDGeneratorService) GenerateID() int {
+// 	ig.mu.Lock()
+// 	defer ig.mu.Unlock()
 
-	ig.lastId++
-	return ig.lastId
-}
+// 	ig.lastId++
+// 	return ig.lastId
+// }

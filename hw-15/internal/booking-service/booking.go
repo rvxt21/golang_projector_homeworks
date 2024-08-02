@@ -1,6 +1,12 @@
 package bookingservice
 
-type BookedTours struct {
-	UserID int
-	TourID int
+import (
+	"time"
+)
+
+type Reservation struct {
+	ID        int
+	UserID    int
+	TourID    int
+	CreatedAt time.Time
 }

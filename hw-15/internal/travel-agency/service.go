@@ -1,6 +1,10 @@
 package travelagency
 
-import "github.com/rs/zerolog/log"
+import (
+	idgenerator "hw15/internal/id-generator"
+
+	"github.com/rs/zerolog/log"
+)
 
 type storage interface {
 	Create(t Tour)
@@ -10,10 +14,10 @@ type storage interface {
 
 type Service struct {
 	s           storage
-	idGenerator *IDGeneratorService
+	idGenerator *idgenerator.IDGeneratorService
 }
 
-func NewService(s storage, idGenerator *IDGeneratorService) *Service {
+func NewService(s storage, idGenerator *idgenerator.IDGeneratorService) *Service {
 	return &Service{s: s, idGenerator: idGenerator}
 }
 
