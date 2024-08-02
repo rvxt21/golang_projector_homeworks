@@ -40,6 +40,7 @@ func (h Handler) CreateReservetion(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.s.ReserveTour(reserv)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h Handler) GetReservationInfo(w http.ResponseWriter, r *http.Request) {
