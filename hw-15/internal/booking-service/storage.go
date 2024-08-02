@@ -31,3 +31,16 @@ func (s *InMemReservationSorage) GetReservationInfo(id int) (Reservation, bool) 
 	}
 	return res, ok
 }
+
+func (s *InMemReservationSorage) GetReservationsByUserID(userID int) []Reservation {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var userReservations []Reservation
+	for _, reservation := range s.Reservations {
+		if reservation.UserID == userID {
+			userReservations = append(userReservations, reservation)
+		}
+	}
+	return userReservations
+}

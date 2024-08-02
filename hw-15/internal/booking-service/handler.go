@@ -12,6 +12,7 @@ import (
 type service interface {
 	ReserveTour(res Reservation) error
 	GetReservationInfo(id int) (Reservation, bool)
+	GetReservationsByUserID(userID int) []Reservation
 }
 
 type Handler struct {
@@ -25,6 +26,7 @@ func NewHandler(s service) Handler {
 func (h Handler) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/reservations", h.CreateReservetion).Methods("POST")
 	r.Handle("/reservations/{id}", middlewares.IDHandler(http.HandlerFunc(h.GetReservationInfo))).Methods("GET")
+	r.Handle("/users/{id}/myreservations", middlewares.IDHandler(http.HandlerFunc(h.GetReservationsByUserID))).Methods("GET")
 }
 
 func (h Handler) CreateReservetion(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +46,7 @@ func (h Handler) CreateReservetion(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -58,6 +61,18 @@ func (h Handler) GetReservationInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := json.NewEncoder(w).Encode(reserv)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h Handler) GetReservationsByUserID(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value(middlewares.IdKey).(int)
+
+	reservations := h.s.GetReservationsByUserID(id)
+
+	err := json.NewEncoder(w).Encode(reservations)
 	if err != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 		return

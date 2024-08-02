@@ -25,6 +25,7 @@ func NewService(s storage, id *idgenerator.IDGeneratorService, us *userservice.U
 type storage interface {
 	CreateReservation(res Reservation)
 	GetReservationInfo(id int) (Reservation, bool)
+	GetReservationsByUserID(userID int) []Reservation
 }
 
 func (bs BookingService) ReserveTour(res Reservation) error {
@@ -43,6 +44,9 @@ func (bs BookingService) ReserveTour(res Reservation) error {
 
 	res.ID = bs.idGenerator.GenerateID()
 	bs.storage.CreateReservation(res)
+
+	//Some logic about getting user email address and sending email
+	log.Info().Msgf("sending email about reservation %d, for user %d", res.ID, res.UserID)
 	return nil
 }
 
@@ -50,4 +54,8 @@ func (bs BookingService) GetReservationInfo(id int) (Reservation, bool) {
 
 	res, ok := bs.storage.GetReservationInfo(id)
 	return res, ok
+}
+
+func (bs BookingService) GetReservationsByUserID(userID int) []Reservation {
+	return bs.storage.GetReservationsByUserID(userID)
 }
