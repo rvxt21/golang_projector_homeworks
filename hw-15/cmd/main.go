@@ -29,7 +29,7 @@ func main() {
 	//Reservation Service
 	reservIdGenerator := idgenerator.NewIDGenerator()
 	reservStorage := bookingservice.NewInMemStorage()
-	reservService := bookingservice.NewService(&reservStorage, reservIdGenerator)
+	reservService := bookingservice.NewService(&reservStorage, reservIdGenerator, userService, tourService)
 	reservHandler := bookingservice.NewHandler(reservService)
 	reservHandler.RegisterRoutes(router)
 
