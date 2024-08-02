@@ -39,6 +39,7 @@ func (h Handler) CreateTour(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.s.CreateTour(tour)
+	w.WriteHeader(http.StatusCreated)
 
 }
 

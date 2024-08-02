@@ -1,7 +1,36 @@
 package userservice
 
+import (
+	"sync"
+
+	"github.com/rs/zerolog/log"
+)
+
 type InMemUserStorage struct {
+	m     sync.Mutex
 	users map[int]User
 }
 
-func CreateUser()
+func NewInMemoryStorage() InMemUserStorage {
+	return InMemUserStorage{
+		users: map[int]User{},
+	}
+}
+
+func (s *InMemUserStorage) CreateUser(u User) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	s.users[u.ID] = u
+}
+
+func (s *InMemUserStorage) GetUserById(id int) (User, bool) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	user, ok := s.users[id]
+	if !ok {
+		log.Error().Msgf("User not found")
+	}
+	return user, ok
+}
