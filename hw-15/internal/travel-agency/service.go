@@ -7,7 +7,7 @@ import (
 )
 
 type storage interface {
-	Create(t Tour)
+	Create(t Tour) (int, error)
 	GetAllTours() map[int]Tour
 	GetTourByID(tourID int) (Tour, error)
 }
