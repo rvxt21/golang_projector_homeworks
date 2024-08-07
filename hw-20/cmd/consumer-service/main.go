@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -29,6 +30,9 @@ func main() {
 	go func() {
 		http.ListenAndServe(":8081", AllOrangesHandler(service))
 	}()
+	ticker := time.NewTicker(time.Second * 10)
+	url := "http://localhost:8080"
+	defer ticker.Stop()
 
 	kafkaReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: []string{"localhost:9092"},
@@ -36,21 +40,27 @@ func main() {
 	})
 
 	for {
-		msg, err := kafkaReader.ReadMessage(ctx)
-		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to read message")
-		}
-		log.Info().Str("msg", string(msg.Value)).Msg("Got message from kafka")
+		select {
+		case <-ticker.C:
+			CallHandler(url)
+		default:
 
-		var oe OrangeEvent
+			msg, err := kafkaReader.ReadMessage(ctx)
+			if err != nil {
+				log.Fatal().Err(err).Msg("Failed to read message")
+			}
+			log.Info().Str("msg", string(msg.Value)).Msg("Got message from kafka")
 
-		if err := json.Unmarshal(msg.Value, &oe); err != nil {
-			log.Warn().Err(err).Msg("Failed to decode message")
-			continue
-		}
+			var oe OrangeEvent
 
-		if err := service.ConsumeOrangeEvent(oe); err != nil {
-			log.Warn().Err(err).Msg("Failed to consume")
+			if err := json.Unmarshal(msg.Value, &oe); err != nil {
+				log.Warn().Err(err).Msg("Failed to decode message")
+				continue
+			}
+
+			if err := service.ConsumeOrangeEvent(oe); err != nil {
+				log.Warn().Err(err).Msg("Failed to consume")
+			}
 		}
 	}
 
