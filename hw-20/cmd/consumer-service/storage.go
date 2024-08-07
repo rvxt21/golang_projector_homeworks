@@ -7,7 +7,8 @@ import (
 )
 
 type InMemStorage struct {
-	Oranges map[int]Orange
+	Oranges   map[int]Orange
+	Analytics OrangesAnalytics
 }
 
 func NewInMemStorage() *InMemStorage {
@@ -26,7 +27,16 @@ func (m *InMemStorage) CreateOrange(o Orange) error {
 		return errOrangeAlreadyExists
 	}
 	m.Oranges[o.ID] = o
+	switch {
+	case o.Size >= 0 && o.Size <= 100:
+		m.Analytics.Small++
+	case o.Size > 100 && o.Size <= 200:
+		m.Analytics.Medium++
+	case o.Size > 200 && o.Size <= 300:
+		m.Analytics.Big++
+	}
 	return nil
+
 }
 
 func (m *InMemStorage) GetAllOranges() []Orange {
@@ -36,4 +46,12 @@ func (m *InMemStorage) GetAllOranges() []Orange {
 	}
 
 	return oranges
+}
+
+func (m *InMemStorage) GetAnalytics() map[string]int {
+	analytics := make(map[string]int, 3)
+	analytics["small"] = m.Analytics.Small
+	analytics["medium"] = m.Analytics.Medium
+	analytics["big"] = m.Analytics.Big
+	return analytics
 }

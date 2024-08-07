@@ -2,8 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
@@ -25,20 +23,4 @@ func AllOrangesHandler(s *OrangeService) http.Handler {
 			log.Warn().Err(err).Msg("Failed to JSON encode")
 		}
 	})
-}
-
-func CallHandler(url string) {
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Error().Err(err).Msgf("error to get response")
-	}
-	body, err := io.ReadAll(resp.Body)
-	resp.Body.Close()
-	if resp.StatusCode > 299 {
-		log.Error().Msgf("Response failed with status code: %d and\nbody: %s\n", resp.StatusCode, body)
-	}
-	if err != nil {
-		log.Info().Err(err)
-	}
-	fmt.Printf("%s", body)
 }
