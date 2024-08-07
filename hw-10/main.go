@@ -1,6 +1,7 @@
 package main
 
 import (
+	"hw10/middleware"
 	"hw10/resources"
 	"hw10/storage"
 	"net/http"
@@ -23,7 +24,8 @@ func main() {
 
 	mux.HandleFunc("/task", taskRes.CreateTask).Methods("POST")
 	mux.HandleFunc("/tasks", taskRes.GetAll).Methods("GET")
-	// mux.Handle("/tasks/{id}", middleware.IdMiddleware(http.HandlerFunc(taskRes.DeleteTask))).Methods("DELETE")
+	mux.Handle("/tasks/{id}", middleware.IdMiddleware(http.HandlerFunc(taskRes.GetTask))).Methods("GET")
+	mux.Handle("/tasks/{id}", middleware.IdMiddleware(http.HandlerFunc(taskRes.DeleteTask))).Methods("DELETE")
 	// mux.Handle("/tasks/{id}", middleware.IdMiddleware(http.HandlerFunc(taskRes.UpdateTask))).Methods("PUT")
 	// mux.HandleFunc("/user", taskRes.CreateUser).Methods("POST")
 

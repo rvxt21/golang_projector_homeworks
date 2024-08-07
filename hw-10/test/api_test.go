@@ -15,7 +15,7 @@ package test_tests
 // )
 
 // func TestCreateOneTask(t *testing.T) {
-// 	mockStorage := storage.NewStorage()
+// 	mockStorage := storage.NewInMemory()
 
 // 	newTask := enteties.Task{
 // 		Title:       "Create API for tasks managment",
@@ -35,7 +35,7 @@ package test_tests
 // }
 
 // func TestPostMethodCreatingTask(t *testing.T) {
-// 	mockStorage := storage.NewStorage()
+// 	mockStorage := storage.NewInMemory()
 // 	mockResource := resources.TasksResourse{S: mockStorage}
 
 // 	newTask := enteties.Task{
