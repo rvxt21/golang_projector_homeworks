@@ -2,6 +2,7 @@ package travelagency
 
 import (
 	"encoding/json"
+	"errors"
 	"hw15/internal/middlewares"
 	"net/http"
 
@@ -49,7 +50,11 @@ func (h Handler) GetTourInfo(w http.ResponseWriter, r *http.Request) {
 
 	tour, err := h.s.GetTourByID(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadGateway)
+		if errors.Is(err, ErrTourNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			http.Error(w, "Tour not found", http.StatusNotFound)
+		}
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	err = json.NewEncoder(w).Encode(tour)

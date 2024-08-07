@@ -33,3 +33,25 @@ func TestCreateOneTour(t *testing.T) {
 	assert.Equal(t, newTour.Nutrition, storedTask.Nutrition)
 	assert.Equal(t, newTour.TransportType, storedTask.TransportType)
 }
+
+func TestGetTour(t *testing.T) {
+	tour1 := travelagency.Tour{ID: 1, Title: "Test Tour", Price: 100000, Programm: "some programm", TouristsNumber: 2, Nutrition: "Breakfast", TransportType: "Plane"}
+	tour2 := travelagency.Tour{ID: 2, Title: "2 Test Tour", Price: 189001, Programm: "some programm", TouristsNumber: 2, Nutrition: "All inclusive", TransportType: "Plane"}
+
+	mockStorage := travelagency.InMemoryStorage{
+		Tours: map[int]travelagency.Tour{
+			1: tour1,
+			2: tour2,
+		},
+	}
+	t.Run("existing tour", func(t *testing.T) {
+		gotTour, err := mockStorage.GetTourByID(1)
+		require.NoError(t, err)
+		assert.Equal(t, tour1, gotTour)
+	})
+
+	t.Run("non-existing tour", func(t *testing.T) {
+		_, err := mockStorage.GetTourByID(3)
+		assert.ErrorIs(t, err, travelagency.ErrTourNotFound)
+	})
+}
