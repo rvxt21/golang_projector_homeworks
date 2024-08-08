@@ -1,10 +1,13 @@
 package test
 
 import (
+	"bytes"
 	bookingservice "hw15/internal/booking-service"
 	idgenerator "hw15/internal/id-generator"
 	travelagency "hw15/internal/travel-agency"
 	userservice "hw15/internal/user-service"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -20,6 +23,7 @@ var (
 	mockUserService    = userservice.NewUserService(&mockStorageUsers)
 	mockToursService   = travelagency.NewService(mockStorage, mockIdGenerator)
 	mockBookingService = bookingservice.NewService(&mockStorageBooking, mockIdGenerator, mockUserService, mockToursService)
+	toursHandler       = travelagency.NewHandler(mockToursService)
 )
 
 func TestCreateOneTour(t *testing.T) {
@@ -94,4 +98,24 @@ func TestReservation(t *testing.T) {
 		require.Equal(t, userservice.ErrUserNotFound, err)
 	})
 
+}
+
+func TestCreateTourHandler(t *testing.T) {
+	validData := []byte(`{"title": "Test_title", "price": 19999, "program": "Test_programm", "tourists_number": 4, "nutrition": "Breakfast", "transport_type": "Bus"}`)
+	req := httptest.NewRequest(http.MethodPost, "/tours", bytes.NewBuffer(validData))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	toursHandler.CreateTour(w, req)
+	if w.Code != http.StatusCreated {
+		t.Errorf("Expected status code %v, got %v", http.StatusCreated, w.Code)
+	}
+
+	invalidJSON := []byte(`{"title": "Test_title", "price": 19999, "program": "Test_programm", "tourists_number": 4, "nutrition": "Breakfast", "transport_type": "Bus"`)
+	req = httptest.NewRequest(http.MethodPost, "/tours", bytes.NewBuffer(invalidJSON))
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	toursHandler.CreateTour(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Expected status code %v, got %v", http.StatusBadRequest, w.Code)
+	}
 }
